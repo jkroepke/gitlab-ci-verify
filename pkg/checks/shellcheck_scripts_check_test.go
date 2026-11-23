@@ -13,6 +13,20 @@ func TestShellScriptCheck_Run(t *testing.T) {
 		expectedFindings []CheckFinding
 	}{
 		{
+			name: "Component inputs without defaults",
+			file: "withComponentInputs.yml",
+			expectedFindings: []CheckFinding{
+				{
+					Severity: SeverityInfo,
+					Code: "SC-2086",
+					Line: 8,
+					Message: "[deploy:script:1] Double quote to prevent globbing and word splitting.",
+					Link: "https://www.shellcheck.net/wiki/SC2086",
+					File: "withComponentInputs.yml",
+				},
+			},
+		},
+		{
 			name: "With info finding",
 			file: "withScriptInfoFinding.yml",
 			expectedFindings: []CheckFinding{

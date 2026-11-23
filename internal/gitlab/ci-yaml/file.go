@@ -2,6 +2,7 @@ package ci_yaml
 
 import (
 	"bytes"
+	"io"
 	formatconversion "github.com/timo-reymann/gitlab-ci-verify/v2/internal/format-conversion"
 	"github.com/timo-reymann/gitlab-ci-verify/v2/internal/gitlab/ci-yaml/includes"
 	"github.com/timo-reymann/gitlab-ci-verify/v2/pkg/filtering"
@@ -45,8 +46,19 @@ func NewCiYamlFile(content []byte) (*CiYamlFile, error) {
 	decoder.UniqueKeys(false)
 	decoder.WithLineNumberMapping()
 
-	if err = decoder.Decode(&parsed); err != nil {
-		return nil, err
+	parsed = make(map[string]any)
+	for {
+		var document map[string]any
+		err = decoder.Decode(&document)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		for key, value := range document {
+			parsed[key] = value
+		}
 	}
 	lineNummberMapping := decoder.LineNumberMapping()
 
