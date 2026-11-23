@@ -1,0 +1,8 @@
+spec:
+  inputs:
+    image:
+      type: string
+---
+deploy:
+  script:
+    - echo $UNQUOTED_VARIABLE
